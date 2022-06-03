@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Time.com</title>
+</head>
+<body>
+	<button onclick="pointer()">Get Time Stories</button>
+	<p id="content"></p>
+	<script type="text/javascript">
+		function pointer(argument) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "https://time.com/");
+			xhr.responseType = "document";
+			xhr.send();
+			xhr.onload = function() {
+				var data = this.responseXML;
+				const parser = new DOMParser();
+				const doc = parser.parseFromString(data, "application/xml");
+				var fullDocument = data.documentElement;
+				//JSON Object Array
+				var jsonObj = getTimeStories(fullDocument);
+  				console.log(jsonObj);
+				alert("JSON Object Array logged in console")
+			}
+		};
+		function getTimeStories(data){
+			var latestStories = data.getElementsByClassName('latest-stories__item');
+			storiesArray = [];
+			var a = latestStories[0].getElementsByTagName('a')[0].getAttribute('href');
+			for(var i=0;i<latestStories.length;i++){
+				var a = latestStories[i].getElementsByTagName('a')[0].getAttribute('href');
+				var heading = latestStories[i].getElementsByTagName('h3')[0].innerText;
+				item = {}
+				item["title"] = heading
+				item["link"] = a
+				storiesArray.push(item)
+			}
+			return storiesArray
+			}
+	</script>
+</body>
+</html>
